@@ -1,6 +1,7 @@
 """
 osos base class.
 """
+import time
 import datetime
 import os
 import pandas as pd
@@ -184,7 +185,7 @@ class Osos:
         return table
 
     @classmethod
-    def run_config(cls, config):
+    def run_config(cls, config, sleep=0):
         """Run multiple osos jobs from a csv config.
 
         Parameters
@@ -192,6 +193,9 @@ class Osos:
         config : str
             Path to .csv config file with columns for git_owner, git_repo,
             fpath_out, and (optionally) pypi_name, conda_org, and conda_name.
+        sleep : float | int
+            Option for a sleep in number of seconds after each entry in the
+            config. This can help prevent rate limit issues.
         """
 
         assert os.path.exists(config), 'config must be a valid filepath'
@@ -224,3 +228,5 @@ class Osos:
                        conda_name=conda_name)
 
             osos.update(fpath_out)
+            logger.info(f'Sleeping for {sleep} seconds...')
+            time.sleep(sleep)

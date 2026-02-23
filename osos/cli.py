@@ -45,6 +45,9 @@ def main(ctx):
 @click.option('--conda_name', '-cn', required=False, default=None, type=str,
               help='Conda package name, for example: '
               'https://anaconda.org/{org}/{name}. Case insensitive.')
+@click.option('--sleep', '-s', required=False, default=0.0, type=float,
+              help='Option for a sleep in number of seconds after each entry '
+              'in the config. This can help prevent rate limit issues.')
 @click.option('--fpath_out', '-f', required=False, default=None, type=str,
               help='Output file to save the osos output table. If the file '
               'exists, it will be updated with the latest data. This path can '
@@ -55,7 +58,7 @@ def main(ctx):
               help='Flag to turn on debug logging. Default is not verbose.')
 @click.pass_context
 def run(ctx, config, git_owner, git_repo, pypi_name, conda_org, conda_name,
-        fpath_out, verbose):
+        sleep, fpath_out, verbose):
     """Retrieve repo usage data using osos"""
 
     ctx.ensure_object(dict)
@@ -74,7 +77,7 @@ def run(ctx, config, git_owner, git_repo, pypi_name, conda_org, conda_name,
         init_logger('osos', log_level='INFO')
 
     if c1:
-        Osos.run_config(config)
+        Osos.run_config(config, sleep=sleep)
     else:
         osos = Osos(git_owner, git_repo, pypi_name=pypi_name,
                     conda_org=conda_org, conda_name=conda_name)
